@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#080f1e">
+    <meta name="description"
+        content="PhishGuard helps you inspect URLs for common phishing indicators, suspicious patterns and basic website security signals.">
+
+    <title>PhishGuard | Advanced URL Security Scanner</title>
+
+    <!-- Connect CSS -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Connect JavaScript -->
+    <script src="script.js" defer></script>
+
+    <!-- Additional styling for the advanced HTML components -->
+    <style>
+        .feature-card summary {
+            list-style: none;
+            cursor: pointer;
+        }
+
+        .feature-card summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .feature-card summary::after {
+            content: "+";
+            float: right;
+            color: #22d3ee;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .feature-card[open] summary::after {
+            content: "−";
+        }
+
+        .feature-card .feature-extra {
+            margin-top: 15px;
+            padding-top: 14px;
+            border-top: 1px solid rgba(148, 163, 184, 0.18);
+            color: #d1dbea;
+        }
+
+        .feature-card:focus-within {
+            outline: 2px solid #22d3ee;
+            outline-offset: 3px;
+        }
+
+        .hero-visual {
+            width: min(100%, 560px);
+            margin-top: 42px;
+            padding: 20px;
+            background: rgba(16, 27, 48, 0.85);
+            border: 1px solid rgba(34, 211, 238, 0.25);
+            border-radius: 18px;
+            text-align: left;
+            box-shadow: 0 20px 55px rgba(0, 0, 0, 0.18);
+        }
+
+        .visual-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        }
+
+        .visual-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .visual-dots span {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #64748b;
+        }
+
+        .visual-label {
+            color: #a6b4ca;
+            font-size: 11px;
+        }
+
+        .visual-status {
+            color: #34d399;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .visual-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 17px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.025);
+            border-radius: 10px;
+        }
+
+        .visual-symbol {
+            width: 35px;
+            height: 35px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 9px;
+            background: rgba(59, 130, 246, 0.15);
+        }
+
+        .visual-row strong {
+            display: block;
+            font-size: 12px;
+        }
+
+        .visual-row small {
+            display: block;
+            margin-top: 3px;
+            color: #a6b4ca;
+            font-size: 10px;
+        }
+
+        .visual-check {
+            margin-left: auto;
+            color: #34d399;
+            font-size: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 15px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .stat-card {
+            padding: 20px 12px;
+            text-align: center;
+            background: rgba(20, 36, 61, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 13px;
+        }
+
+        .stat-card strong {
+            display: block;
+            color: #22d3ee;
+            font-size: 15px;
+        }
+
+        .stat-card span {
+            color: #a6b4ca;
+            font-size: 11px;
+        }
+
+        .security-tips {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        .tip-card {
+            padding: 20px;
+            background: rgba(20, 36, 61, 0.7);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 13px;
+        }
+
+        .tip-card h3 {
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .tip-card p {
+            color: #a6b4ca;
+            font-size: 12px;
+        }
+
+        .section-cta {
+            margin-top: 28px;
+            text-align: center;
+        }
+
+        .section-cta p {
+            margin-bottom: 15px;
+            color: #a6b4ca;
+            font-size: 13px;
+        }
+
+        @media (max-width: 650px) {
+            .hero-visual {
+                padding: 14px;
+            }
+
+            .stats-grid {
+                gap: 8px;
+            }
+
+            .stat-card {
+                padding: 15px 7px;
+            }
+
+            .stat-card strong {
+                font-size: 12px;
+            }
+
+            .stat-card span {
+                font-size: 10px;
+            }
+
+            .security-tips {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ================= NAVBAR ================= -->
+
+    <header class="navbar">
+        <a href="#home" class="logo" aria-label="PhishGuard home">
+            <span class="logo-icon">🛡️</span>
+            Phish<span>Guard</span>
+        </a>
+
+        <nav aria-label="Main navigation">
+            <a href="#home">Home</a>
+            <a href="#scanner">Scanner</a>
+            <a href="#features">Features</a>
+            <a href="#how-it-works">How It Works</a>
+            <a href="#about">About</a>
+        </nav>
+
+        <a href="#scanner" class="nav-btn">Scan URL ↗</a>
+    </header>
+
+    <main>
+
+        <!-- ================= HERO ================= -->
+
+        <section class="hero" id="home">
+
+            <div class="security-badge">
+                <span class="live-dot"></span>
+                WEB SECURITY & PHISHING AWARENESS
+            </div>
+
+            <h1>
+                Detect Suspicious Links.<br>
+                <span>Browse With Care.</span>
+            </h1>
+
+            <p class="hero-text">
+                Protect yourself from deceptive links.
+                PhishGuard inspects common URL patterns and
+                highlights potential phishing warning signs
+                before you decide to visit a website.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#scanner" class="primary-btn">
+                    🛡️ Scan a URL
+                </a>
+
+                <a href="#features" class="secondary-btn">
+                    Explore Features ↓
+                </a>
+            </div>
+
+            <div class="trust-row">
+                <span>✓ Easy to use</span>
+                <span>✓ Instant pattern checks</span>
+                <span>✓ No account required</span>
+            </div>
+
+            <!-- Decorative security dashboard -->
+            <div class="hero-visual" aria-label="Illustration of URL security checks">
+
+                <div class="visual-top">
+                    <div class="visual-dots" aria-hidden="true">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+
+                    <span class="visual-label">PHISHGUARD SECURITY PANEL</span>
+                    <span class="visual-status">● READY</span>
+                </div>
+
+                <div class="visual-row">
+                    <div class="visual-symbol">🔗</div>
+                    <div>
+                        <strong>URL Structure Analysis</strong>
+                        <small>Inspecting common URL patterns</small>
+                    </div>
+                    <span class="visual-check">✓</span>
+                </div>
+
+                <div class="visual-row">
+                    <div class="visual-symbol">🔐</div>
+                    <div>
+                        <strong>HTTPS Indicator</strong>
+                        <small>Checking the URL protocol</small>
+                    </div>
+                    <span class="visual-check">✓</span>
+                </div>
+
+                <div class="visual-row">
+                    <div class="visual-symbol">⚠️</div>
+                    <div>
+                        <strong>Suspicious Patterns</strong>
+                        <small>Checking selected warning signs</small>
+                    </div>
+                    <span class="visual-check">✓</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= PROJECT OVERVIEW ================= -->
+
+        <section class="features-section" id="overview">
+
+            <div class="section-heading">
+                <span class="eyebrow">PROJECT OVERVIEW</span>
+                <h2>Security made <span>understandable</span></h2>
+                <p>
+                    A browser-based educational tool for learning
+                    how suspicious URLs can be identified.
+                </p>
+            </div>
+
+            <div class="stats-grid">
+
+                <div class="stat-card">
+                    <strong>URL Analysis</strong>
+                    <span>Inspect URL patterns</span>
+                </div>
+
+                <div class="stat-card">
+                    <strong>Risk Indicators</strong>
+                    <span>Review possible warning signs</span>
+                </div>
+
+                <div class="stat-card">
+                    <strong>Instant Results</strong>
+                    <span>View a browser-side report</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= URL SCANNER ================= -->
+
+        <section class="scanner-section" id="scanner">
+
+            <div class="section-heading">
+                <span class="eyebrow">URL SECURITY CHECK</span>
+                <h2>Check a <span>suspicious link</span></h2>
+                <p>
+                    Enter a website address to inspect its
+                    structure and common warning indicators.
+                </p>
+            </div>
+
+            <div class="scanner-card">
+
+                <div class="scanner-card-header">
+
+                    <div class="scanner-title">
+                        <span class="scanner-icon">🔎</span>
+
+                        <div>
+                            <h3>PhishGuard URL Scanner</h3>
+                            <p>Basic client-side URL analysis</p>
+                        </div>
+                    </div>
+
+                    <span class="secure-label">
+                        ● Scanner Ready
+                    </span>
+                </div>
+
+                <!-- Keep these IDs for script.js -->
+                <form id="scanForm">
+
+                    <label for="urlInput">Website URL</label>
+
+                    <div class="input-group">
+                        <span class="input-icon" aria-hidden="true">🔗</span>
+
+                        <input type="text" id="urlInput" name="url" placeholder="https://example.com" autocomplete="url"
+                            spellcheck="false" autocapitalize="none" aria-describedby="urlHint" required>
+
+                        <button type="submit" id="scanButton">
+                            Scan URL →
+                        </button>
+                    </div>
+
+                    <p class="input-hint" id="urlHint">
+                        Example: https://example.com
+                    </p>
+
+                </form>
+
+                <!-- JavaScript displays the scan report here -->
+                <div id="result" class="result-box" hidden aria-live="polite" aria-atomic="true">
+                </div>
+
+                <div class="privacy-note">
+                    <span aria-hidden="true">🔒</span>
+                    <p>
+                        Educational URL analysis. Avoid entering
+                        private, confidential or personal links.
+                    </p>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= FEATURES ================= -->
+
+        <section class="features-section" id="features">
+
+            <div class="section-heading">
+                <span class="eyebrow">SCANNER CAPABILITIES</span>
+                <h2>Explore our <span>security checks</span></h2>
+                <p>
+                    Click a feature card to learn what it checks
+                    and understand its limitations.
+                </p>
+            </div>
+
+            <div class="features-grid">
+
+                <details class="feature-card">
+                    <summary>
+                        <div class="feature-icon blue">🔍</div>
+                        <h3>URL Analysis</h3>
+                        <p>
+                            Inspect URL structure, length and
+                            selected unusual characters.
+                        </p>
+                    </summary>
+
+                    <p class="feature-extra">
+                        A URL can contain a hostname, path,
+                        query parameters and fragments. Reviewing
+                        these parts can help identify unusual
+                        patterns, but cannot prove that a site
+                        is malicious.
+                    </p>
+
+                    <a href="#scanner" class="secondary-btn">
+                        Try Scanner →
+                    </a>
+                </details>
+
+                <details class="feature-card">
+                    <summary>
+                        <div class="feature-icon purple">⚠️</div>
+                        <h3>Phishing Indicators</h3>
+                        <p>
+                            Look for selected keywords, IP
+                            addresses and shortened links.
+                        </p>
+                    </summary>
+
+                    <p class="feature-extra">
+                        Phishing messages may use misleading
+                        domains or imitate familiar services.
+                        These checks identify patterns only;
+                        legitimate websites can also trigger
+                        warnings.
+                    </p>
+
+                    <a href="#scanner" class="secondary-btn">
+                        Check a URL →
+                    </a>
+                </details>
+
+                <details class="feature-card">
+                    <summary>
+                        <div class="feature-icon green">🔐</div>
+                        <h3>HTTPS Check</h3>
+                        <p>
+                            Inspect whether the URL uses
+                            HTTPS or HTTP.
+                        </p>
+                    </summary>
+
+                    <p class="feature-extra">
+                        HTTPS encrypts the connection when
+                        configured correctly. However, phishing
+                        websites can also use HTTPS. The protocol
+                        alone does not establish trustworthiness.
+                    </p>
+
+                    <a href="#scanner" class="secondary-btn">
+                        Inspect URL →
+                    </a>
+                </details>
+
+                <details class="feature-card">
+                    <summary>
+                        <div class="feature-icon orange">📊</div>
+                        <h3>Detection Report</h3>
+                        <p>
+                            Review the warning indicators
+                            found during the scan.
+                        </p>
+                    </summary>
+
+                    <p class="feature-extra">
+                        The report displays the results of
+                        the current browser-side checks. It is
+                        not a verified reputation report and
+                        does not query a live threat database.
+                    </p>
+
+                    <a href="#scanner" class="secondary-btn">
+                        Generate Report →
+                    </a>
+                </details>
+
+            </div>
+        </section>
+
+        <!-- ================= HOW IT WORKS ================= -->
+
+        <section class="how-section" id="how-it-works">
+
+            <div class="section-heading">
+                <span class="eyebrow">HOW IT WORKS</span>
+                <h2>Three simple <span>steps</span></h2>
+                <p>
+                    Learn how to use PhishGuard responsibly.
+                </p>
+            </div>
+
+            <div class="steps-grid">
+
+                <article class="step-card">
+                    <span class="step-number">01</span>
+                    <h3>Enter the URL</h3>
+                    <p>
+                        Paste the website address you want
+                        to inspect into the scanner.
+                    </p>
+                </article>
+
+                <article class="step-card">
+                    <span class="step-number">02</span>
+                    <h3>Run the Analysis</h3>
+                    <p>
+                        The JavaScript checks selected URL
+                        patterns in your browser.
+                    </p>
+                </article>
+
+                <article class="step-card">
+                    <span class="step-number">03</span>
+                    <h3>Review the Report</h3>
+                    <p>
+                        Read the indicators and take care
+                        before visiting unfamiliar websites.
+                    </p>
+                </article>
+
+            </div>
+
+            <div class="section-cta">
+                <p>Ready to inspect a website address?</p>
+                <a href="#scanner" class="primary-btn">
+                    Start URL Scan →
+                </a>
+            </div>
+        </section>
+
+        <!-- ================= SECURITY TIPS ================= -->
+
+        <section class="features-section" id="security-tips">
+
+            <div class="section-heading">
+                <span class="eyebrow">STAY PROTECTED</span>
+                <h2>Smart <span>browsing habits</span></h2>
+                <p>
+                    A scanner is only one part of online safety.
+                </p>
+            </div>
+
+            <div class="security-tips">
+
+                <article class="tip-card">
+                    <h3>🔎 Check the domain</h3>
+                    <p>
+                        Read the full hostname carefully.
+                        Look for misspellings and lookalike
+                        domains before entering credentials.
+                    </p>
+                </article>
+
+                <article class="tip-card">
+                    <h3>🔑 Protect your passwords</h3>
+                    <p>
+                        Never share passwords or one-time
+                        passwords through an unexpected link.
+                        Use multifactor authentication where possible.
+                    </p>
+                </article>
+
+                <article class="tip-card">
+                    <h3>📩 Verify unexpected messages</h3>
+                    <p>
+                        If a message claims to be from your bank
+                        or college, use its official app or
+                        type its known address yourself.
+                    </p>
+                </article>
+
+                <article class="tip-card">
+                    <h3>🚫 Avoid unknown downloads</h3>
+                    <p>
+                        Do not open unexpected attachments or
+                        download files from unfamiliar websites.
+                    </p>
+                </article>
+
+            </div>
+        </section>
+
+        <!-- ================= ABOUT ================= -->
+
+        <section class="how-section" id="about">
+
+            <div class="section-heading">
+                <span class="eyebrow">ABOUT THE PROJECT</span>
+                <h2>Built for a <span>safer digital world</span></h2>
+                <p>
+                    PhishGuard is an educational cybersecurity
+                    project designed to demonstrate basic
+                    phishing URL analysis.
+                </p>
+            </div>
+
+            <div class="scanner-card">
+                <div class="scanner-title">
+                    <span class="scanner-icon">🛡️</span>
+                    <div>
+                        <h3>Our objective</h3>
+                        <p>Awareness, inspection and education</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 20px; color: #cbd5e1;">
+                    The project demonstrates how common URL
+                    characteristics can be inspected using
+                    HTML, CSS and JavaScript. It is intended
+                    for learning and awareness, not as a
+                    replacement for professional security tools.
+                </p>
+            </div>
+        </section>
+
+        <!-- ================= DISCLAIMER ================= -->
+
+        <section class="disclaimer" id="disclaimer">
+            <span aria-hidden="true">⚠️</span>
+
+            <p>
+                <strong>Important security notice:</strong>
+                This version performs basic browser-side URL
+                pattern checks. It does not verify a website
+                against a live phishing database or a trained
+                detection model. A URL with no detected
+                warning signs may still be malicious. Do not
+                rely on this demonstration alone to decide
+                whether a website is safe.
+            </p>
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+        <a href="#home" class="logo footer-logo">
+            🛡️ Phish<span>Guard</span>
+        </a>
+
+        <p>Promoting cybersecurity awareness, one link at a time.</p>
+
+        <p>
+            <a href="#scanner">URL Scanner</a>
+            &nbsp; · &nbsp;
+            <a href="#features">Features</a>
+            &nbsp; · &nbsp;
+            <a href="#security-tips">Security Tips</a>
+        </p>
+
+        <p class="copyright">
+            © 2026 PhishGuard | Cyber Security Student Project
+        </p>
+    </footer>
+
+</body>
+
+</html>
